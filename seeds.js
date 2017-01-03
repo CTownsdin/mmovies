@@ -22,35 +22,35 @@ function seedDB(){
         if (err) console.log(err);
         console.log('removed movies');
 
-        // add movies, hardcoded to use movies from above
-        movies.forEach((movie) => {
-            const title = movie.title;
-            const image = movie.image;
-            const description = movie.description;
-            const comments = [];
-            const newMovie = { title, image, description, comments };
-
-            Movie.create(newMovie, (err, movie) => {  // create does a save()
-                if (err){ console.log(err); }
-                else {
-                    console.log(`add movie: ${title}`);
-
-                    // add comments
-                    // Comment.create(
-                    //     {
-                    //         text: 'placeholder review text',
-                    //         commenter: 'placeholder reviewer'
-                    //     }, (err, comment) => {
-                    //     if (err) console.log(err);
-                    //     else {
-                    //         movie.comments.push(comment);  // note!  movie not Movie, Movie is the MovieModel
-                    //         movie.save();
-                    //         console.log('created new dummy comment');
-                    //     }
-                    // });
-                }
-            });
-        });
+        // // ADD MOVIES, hardcoded to use movies from above
+        // movies.forEach((movie) => {
+        //     const title = movie.title;
+        //     const image = movie.image;
+        //     const description = movie.description;
+        //     const comments = [];
+        //     const newMovie = { title, image, description, comments };
+        //
+        //     Movie.create(newMovie, (err, movie) => {  // create does a save()
+        //         if (err){ console.log(err); }
+        //         else {
+        //             console.log(`add movie: ${title}`);
+        //
+        //             // add comments
+        //             // Comment.create(
+        //             //     {
+        //             //         text: 'placeholder review text',
+        //             //         commenter: 'placeholder reviewer'
+        //             //     }, (err, comment) => {
+        //             //     if (err) console.log(err);
+        //             //     else {
+        //             //         movie.comments.push(comment);  // note!  movie not Movie, Movie is the MovieModel
+        //             //         movie.save();
+        //             //         console.log('created new dummy comment');
+        //             //     }
+        //             // });
+        //         }
+        //     });
+        // });
     });
 }
 

@@ -3,6 +3,11 @@ const router = express.Router({mergeParams: true});  // thf req.params.id will b
 const Movie = require('../models/movie');
 const Comment = require('../models/comment');
 
+function isLoggedIn(req, res, next){
+    if (req.isAuthenticated()) return next();
+    res.redirect('/login');
+}
+
 // TODO:  redirect /comment to /comments/new
 // NEW               /movies/:id/comments/new   GET
 router.get('/new', isLoggedIn, (req, res) => {
@@ -15,6 +20,7 @@ router.get('/new', isLoggedIn, (req, res) => {
     })
 });
 
+// COMMENTS CREATE
 router.post('', isLoggedIn, (req, res) => {
     // lookup movie using ID
     const movieId = req.params.id;
@@ -24,25 +30,19 @@ router.post('', isLoggedIn, (req, res) => {
             res.redirect('/movies');   // TODO: ? explain this redirect to the user
         }
         else {
-            // create a new comment
-            // DEBUG console.log(`req.body.comment ${JSON.stringify(req.body.comment)}`);
             Comment.create(req.body.comment, (err, newComment) => {
                 if (err) console.log(err);
                 else {
-                    // connect new comment to movie
+                    newComment.author.id = req.user._id;
+                    newComment.author.username = req.user.username;
+
                     foundMovie.comments.push(newComment);
                     foundMovie.save();
-                    // redirect back to movie show page
                     res.redirect(`/movies/${movieId}`);
                 }
             });
         }
     })
 });
-
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()) return next();
-    res.redirect('/login');
-}
 
 module.exports = router;

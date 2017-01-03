@@ -40,8 +40,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // SEEDDB
-seedDB = require('./seeds');
-seedDB();
+// seedDB = require('./seeds');
+// seedDB();
 
 // add currentUser middleware
 // res.locals is what is available inside each ejs template
