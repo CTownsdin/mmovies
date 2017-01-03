@@ -1,0 +1,38 @@
+<% include ../partials/header %>
+<div class="container">
+    <header class="jumbotron">
+        <div class="container">
+            <h1>Welcome to the</h1>
+            <h1>Meaningful Movies Directory</h1>
+            <p>View our available movies</p>
+            <p>
+                <a class="btn btn-primary btn-large" href="/movies/new">Add a new movie</a>
+            </p>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>Our Most Popular Movies</h3>
+        </div>
+    </div>
+
+    <div class="row text-center" syle="display:flex; flex-wrap: wrap;">
+        <% movies.forEach((movie) => { %>
+        <div class="col-md-3 col-sm-6">
+            <div class="thumbnail">
+                <a href ="/movies/<%= movie._id %>">
+                    <img width="200px" src="<%= movie.image %>" alt="<%= movie.title %>">
+                    <div class="caption">
+                        <h4><%=movie.title%></h4>
+                        <p>
+                            <a href ="/movies/<%= movie._id %>" class="btn btn-primary">Click for more info</a>
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+</div>
+<% include ../partials/footer %>
