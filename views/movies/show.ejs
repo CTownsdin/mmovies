@@ -29,8 +29,12 @@
                 <% movie.comments.forEach((comment) => { %>
                     <div class="row">
                         <div class="col-md-12">
-                            <strong><%= comment.commenter %></strong>
-                            <span class="pull-right">XXXX days ago</span>
+                            <strong>
+                                <%= comment.author.username %>
+                            </strong>
+                            <span class="pull-right">
+                                XXXX days ago
+                            </span>
                             <p>
                                 "<%= comment.text %>"
                             </p>

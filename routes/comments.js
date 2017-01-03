@@ -35,7 +35,7 @@ router.post('', isLoggedIn, (req, res) => {
                 else {
                     newComment.author.id = req.user._id;
                     newComment.author.username = req.user.username;
-
+                    newComment.save();
                     foundMovie.comments.push(newComment);
                     foundMovie.save();
                     res.redirect(`/movies/${movieId}`);
