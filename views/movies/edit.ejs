@@ -1,0 +1,25 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <h1 style="text-align: center">Edit movie <%= movie.title %></h1>
+        <div style="width: 40%; margin: 25px auto">
+            <form method="POST" action="/movies/<%=movie._id%>?_method=PUT">
+                <div class="form-group">
+                    <input class="form-control" type="text" value="<%= movie.title %>" name="movie[title]"/>  <!-- req.body.movie -->
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" value="<%= movie.image %>" name="movie[image]" />
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" value="<%= movie.description %>" name="movie[description]" />
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-lrg btn-primary btn-block">Submit</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer %>

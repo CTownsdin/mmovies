@@ -4,6 +4,13 @@ const movieSchema = new mongoose.Schema({
     title: String,
     image: String,
     description: String,
+    author: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        username: String
+    },
     comments: [  // array of reference objects, by ObjectId, to the actual comments.
         {
             type: mongoose.Schema.Types.ObjectId,

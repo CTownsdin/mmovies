@@ -13,10 +13,8 @@ function isLoggedIn(req, res, next){
 router.get('/new', isLoggedIn, (req, res) => {
     // find movie by id
     Movie.findById(req.params.id, (err, foundMovie) => {
-        if (err) console.log(err);
-        else {
-            res.render('comments/new', { movie: foundMovie });
-        }
+        if (err) return console.log(err);
+        res.render('comments/new', { movie: foundMovie });
     })
 });
 
@@ -31,15 +29,13 @@ router.post('', isLoggedIn, (req, res) => {
         }
         else {
             Comment.create(req.body.comment, (err, newComment) => {
-                if (err) console.log(err);
-                else {
-                    newComment.author.id = req.user._id;
-                    newComment.author.username = req.user.username;
-                    newComment.save();
-                    foundMovie.comments.push(newComment);
-                    foundMovie.save();
-                    res.redirect(`/movies/${movieId}`);
-                }
+                if (err) return console.log(err);
+                newComment.author.id = req.user._id;
+                newComment.author.username = req.user.username;
+                newComment.save();
+                foundMovie.comments.push(newComment);
+                foundMovie.save();
+                res.redirect(`/movies/${movieId}`);
             });
         }
     })
