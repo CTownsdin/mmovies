@@ -40,19 +40,14 @@ router.get('/:id', (req, res) => {
 });
 
 // EDIT a movie
-router.get('/:id/edit', (req, res) => {
-    const movieId = req.params.id;
-    Movie.findById(movieId, (err, foundMovie) => {
-        if (err) {
-            console.log(err);  // TODO:  flash a redirect message
-            res.redirect('/movies');
-        }
-        res.render('movies/edit', { movie: foundMovie });
+router.get('/:id/edit', checkMovieOwnership, (req, res) => {
+    Movie.findById(req.params.id, (err, foundMovie) => {
+        res.render('movies/edit', {movie: foundMovie});
     });
 });
 
 // UPDATE movie route
-router.put('/:id', (req, res) => {
+router.put('/:id', checkMovieOwnership, (req, res) => {
     Movie.findByIdAndUpdate(req.params.id, req.body.movie, (err, updatedMovie) => {
         if (err) {
             console.log('unable to update movie', err);
@@ -65,7 +60,7 @@ router.put('/:id', (req, res) => {
 });
 
 // DESTROY movie route
-router.delete('/:id', (req, res) => {
+router.delete('/:id', checkMovieOwnership, (req, res) => {
     Movie.findByIdAndRemove(req.params.id, (err) => {
         if (err) {
             console.log('an error deleting the movie', err);
@@ -77,6 +72,25 @@ router.delete('/:id', (req, res) => {
 function isLoggedIn(req, res, next){
     if (req.isAuthenticated()) return next();
     res.redirect('/login');
+}
+
+function checkMovieOwnership(req, res, next){
+    if (req.isAuthenticated()) {
+        Movie.findById(req.params.id, (err, foundMovie) => {
+            if (err) res.redirect('back');
+            else {
+                if (foundMovie.author.id.equals(req.user._id)){  // they own it
+                    next();
+                }
+                else {
+                    res.redirect('back'); // they don't own it.
+                }
+            }
+        });
+    }
+    else {
+        res.redirect('back');  // user is not logged in
+    }
 }
 
 module.exports = router;

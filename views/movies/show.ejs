@@ -18,14 +18,16 @@
                     <h4 class="pull-right">$9.00/night</h4>
                     <h4><%= movie.title %></h4>
                     <p>Description: <%= movie.description %></p>
-                    <!-- <p>
+                    <p>
                         <em>Submitted by <strong><%= movie.author.username %></strong></em>
-                    </p> -->
-                    <a class="btn btn-xs btn-warning"
-                    href="/movies/<%=movie._id%>/edit">Edit movie</a>
-                    <form id="delete-form" action="/movies/<%=movie._id%>?_method=DELETE" method="POST">
-                        <button class="btn btn-xs btn-danger">Delete movie</button>
-                    </form>
+                    </p>
+                    <% if (currentUser && movie.author.id.equals(currentUser._id)) { %>
+                        <a class="btn btn-xs btn-warning"
+                        href="/movies/<%=movie._id%>/edit">Edit movie</a>
+                        <form id="delete-form" action="/movies/<%=movie._id%>?_method=DELETE" method="POST">
+                            <button class="btn btn-xs btn-danger">Delete movie</button>
+                        </form>
+                    <% } %>
                 </div>
             </div>
             <div class="well">
