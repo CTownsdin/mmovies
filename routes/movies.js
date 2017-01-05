@@ -5,9 +5,7 @@ const Movie = require('../models/movie');
 router.get('/', (req, res) => {
     Movie.find({}, (err, allMovies) => {
         if (err) return console.log(err);
-        // render while passing in an object that the view template can pull props from
         res.render('movies/index', { movies: allMovies });
-
     });
 });
 
@@ -25,7 +23,7 @@ router.post('/', isLoggedIn, (req, res) => {
         id: req.user._id,
         username: req.user.username
     };
-    const newMovie = { title, image, description, author };  // not using author, but but could in the future us this for crediting the contributor
+    const newMovie = { title, image, description, author };  // not using auth, but could
     Movie.create(newMovie, (err, movie) => {
         if (err) return console.log(err);
         res.redirect('/movies');
@@ -45,34 +43,34 @@ router.get('/:id', (req, res) => {
 router.get('/:id/edit', (req, res) => {
     const movieId = req.params.id;
     Movie.findById(movieId, (err, foundMovie) => {
-        // if (err) return console.log(err);
         if (err) {
-            console.log(err);
-            // TODO:  flash a redirect message
+            console.log(err);  // TODO:  flash a redirect message
             res.redirect('/movies');
         }
         res.render('movies/edit', { movie: foundMovie });
     });
 });
 
-
 // UPDATE movie route
 router.put('/:id', (req, res) => {
     Movie.findByIdAndUpdate(req.params.id, req.body.movie, (err, updatedMovie) => {
-
-        // console.log(`req.params.id: ${req.params.id}`);
-        // console.log(`req.body.movie: ${JSON.stringify(req.body.movie, null, 2)}`);
-        // console.log(`updatedMovie: ${updatedMovie}`);
-        // console.log(`whole req.params: ${JSON.stringify(req.params, null, 2)}`);
-
-        // TODO:  flash the redirect
         if (err) {
             console.log('unable to update movie', err);
-            res.redirect('/movies');
+            res.redirect('/movies');          // TODO:  flash the redirect
         }
         else {
             res.redirect('/movies/' + req.params.id);
         }
+    });
+});
+
+// DESTROY movie route
+router.delete('/:id', (req, res) => {
+    Movie.findByIdAndRemove(req.params.id, (err) => {
+        if (err) {
+            console.log('an error deleting the movie', err);
+        }
+        res.redirect('/movies');  // redirect either way
     });
 });
 
