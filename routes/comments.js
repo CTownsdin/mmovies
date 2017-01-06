@@ -18,7 +18,7 @@ router.get('/new', isLoggedIn, (req, res) => {
     })
 });
 
-// COMMENTS CREATE
+// COMMENT CREATE
 router.post('', isLoggedIn, (req, res) => {
     // lookup movie using ID
     const movieId = req.params.id;
@@ -40,5 +40,51 @@ router.post('', isLoggedIn, (req, res) => {
         }
     })
 });
+
+// COMMENT EDIT
+router.get('/:comment_id/edit', (req, res) => {
+    Comment.findById(req.params.comment_id, (err, foundComment) => {
+        if (err) return console.log('could not find comment id\n', err);
+        res.render('comments/edit', {movie_id: req.params.id, comment: foundComment});
+    });
+});
+
+// COMMENT UPDATE
+router.put('/:comment_id', (req, res) => {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, updatedComment) => {
+
+        if (err) {
+            console.log('unable to update comment\n', err);
+            res.redirect('back');          // TODO:  flash the redirect
+        }
+        else {
+            res.redirect('/movies/' + req.params.id);   // rem, req.params.id is availabe as this route in concat'd when app.use'd in app.js file
+        }
+    });
+});
+
+function checkCommentOwnership(req, res, next){
+    if (req.isAuthenticated()) {
+        Comment.findById(req.params.id, (err, foundComment) => {
+            if (err) {
+                console.log('checkCommentOwnership got err:', err);
+                res.redirect('back');
+            }
+            else {
+                if (foundComment.author.id.equals(req.user._id)) {  // they own it
+                    next();
+                }
+                else {
+                    console.log('something like they do not own it');
+                    res.redirect('back'); // they don't own it.
+                }
+            }
+        });
+    }
+    else {
+        console.log('you must be logged in');
+        res.redirect('back');  // user is not logged in
+    }
+}
 
 module.exports = router;

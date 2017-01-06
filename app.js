@@ -41,7 +41,7 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// SEEDDB
+// // SEEDDB  - notes: movies needs .author.id property
 // seedDB = require('./seeds');
 // seedDB();
 
