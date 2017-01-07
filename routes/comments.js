@@ -44,7 +44,7 @@ router.post('', isLoggedIn, (req, res) => {
 // COMMENT EDIT
 router.get('/:comment_id/edit', (req, res) => {
     Comment.findById(req.params.comment_id, (err, foundComment) => {
-        if (err) return console.log('could not find comment id\n', err);
+        if (err) return console.log('could not find comment id', err);
         res.render('comments/edit', {movie_id: req.params.id, comment: foundComment});
     });
 });
@@ -60,6 +60,16 @@ router.put('/:comment_id', (req, res) => {
         else {
             res.redirect('/movies/' + req.params.id);   // rem, req.params.id is availabe as this route in concat'd when app.use'd in app.js file
         }
+    });
+});
+
+// COMMENT DELETE
+// effective route:  /movies/:id/comments + /:comment_id
+router.delete('/:comment_id', (req, res) => {
+    Comment.findByIdAndRemove(req.params.comment_id, (err, removedComment) => {
+        if (err) return console.log('could not find comment id for deletion', err);
+        // TODO:  flash comment successfully removed
+        res.redirect(`/movies/${req.params.id}`);  // back to show page, & see comment is deleted.
     });
 });
 

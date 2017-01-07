@@ -1,0 +1,21 @@
+<% include ../partials/header %>
+<div class="container">
+    <div class="row">
+        <h1 style="text-align: center">delete comment</h1>
+        <div style="width: 40%; margin: 25px auto">
+            <form method="POST"
+            action="/movies/<%=movie_id%>/comments/<%=comment.id%>?_method=DELETE">
+                <div class="form-group">
+                    <p>
+                        comment text: <%= comment.text %>
+                    </p>
+                </div>
+                <!-- name="comment[whatever]" creates nice req.body.comment prop! -->
+                <div class="form-group">
+                    <button class="btn btn-lrg btn-primary btn-block">Delete this comment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer %>
