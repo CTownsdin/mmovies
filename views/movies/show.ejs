@@ -47,13 +47,15 @@
                             <p>
                                 "<%= comment.text %>"
                             </p>
-                            <a class="btn btn-xs btn-warning"
-                            href="/movies/<%=movie._id%>/comments/<%=comment._id%>/edit">
-                            Edit
-                            </a>
-                            <form id="delete-form" action="/movies/<%=movie._id%>/comments/<%=comment._id%>?_method=DELETE" method="POST">
-                                <input type="submit" class="btn btn-xs btn-danger" value="Delete"/>
-                            </form>
+                            <% if (currentUser && comment.author.id.equals(currentUser._id)){ %>
+                                <a class="btn btn-xs btn-warning"
+                                href="/movies/<%=movie._id%>/comments/<%=comment._id%>/edit">
+                                Edit
+                                </a>
+                                <form id="delete-form" action="/movies/<%=movie._id%>/comments/<%=comment._id%>?_method=DELETE" method="POST">
+                                    <input type="submit" class="btn btn-xs btn-danger" value="Delete"/>
+                                </form>
+                            <% } %>
                         </div>
                     </div>
                 <% }) %>

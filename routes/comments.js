@@ -42,7 +42,7 @@ router.post('', isLoggedIn, (req, res) => {
 });
 
 // COMMENT EDIT
-router.get('/:comment_id/edit', (req, res) => {
+router.get('/:comment_id/edit', checkCommentOwnership, (req, res) => {
     Comment.findById(req.params.comment_id, (err, foundComment) => {
         if (err) return console.log('could not find comment id', err);
         res.render('comments/edit', {movie_id: req.params.id, comment: foundComment});
@@ -50,7 +50,7 @@ router.get('/:comment_id/edit', (req, res) => {
 });
 
 // COMMENT UPDATE
-router.put('/:comment_id', (req, res) => {
+router.put('/:comment_id', checkCommentOwnership, (req, res) => {
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, (err, updatedComment) => {
 
         if (err) {
@@ -63,9 +63,8 @@ router.put('/:comment_id', (req, res) => {
     });
 });
 
-// COMMENT DELETE
-// effective route:  /movies/:id/comments + /:comment_id
-router.delete('/:comment_id', (req, res) => {
+// COMMENT DELETE      effective route:  /movies/:id/comments + /:comment_id
+router.delete('/:comment_id', checkCommentOwnership, (req, res) => {
     Comment.findByIdAndRemove(req.params.comment_id, (err, removedComment) => {
         if (err) return console.log('could not find comment id for deletion', err);
         // TODO:  flash comment successfully removed
@@ -75,7 +74,7 @@ router.delete('/:comment_id', (req, res) => {
 
 function checkCommentOwnership(req, res, next){
     if (req.isAuthenticated()) {
-        Comment.findById(req.params.id, (err, foundComment) => {
+        Comment.findById(req.params.comment_id, (err, foundComment) => {
             if (err) {
                 console.log('checkCommentOwnership got err:', err);
                 res.redirect('back');
@@ -85,13 +84,14 @@ function checkCommentOwnership(req, res, next){
                     next();
                 }
                 else {
-                    console.log('something like they do not own it');
+                    console.log('you do not own that comment');
                     res.redirect('back'); // they don't own it.
                 }
             }
         });
     }
     else {
+        // TODO: flash sign in first
         console.log('you must be logged in');
         res.redirect('back');  // user is not logged in
     }

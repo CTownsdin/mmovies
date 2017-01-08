@@ -48,7 +48,7 @@ passport.deserializeUser(User.deserializeUser());
 // add currentUser middleware
 // res.locals is what is available inside each ejs template
 app.use((req, res, next) => {
-    res.locals.currentUser = req.user;
+    res.locals.currentUser = req.user;   // ! currentUser available to all routes.
     next();
 });
 
