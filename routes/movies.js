@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Movie = require('../models/movie');
+const mw = require('../middleware');  // auto grab index.js
 
 router.get('/', (req, res) => {
     Movie.find({}, (err, allMovies) => {
@@ -10,12 +11,12 @@ router.get('/', (req, res) => {
 });
 
 // get FORM for a new movie
-router.get('/new', isLoggedIn, (req, res) => {
+router.get('/new', mw.isLoggedIn, (req, res) => {
     res.render('movies/new');  // new.ejs
 });
 
 // CREATE a movie
-router.post('/', isLoggedIn, (req, res) => {
+router.post('/', mw.isLoggedIn, (req, res) => {
     const title = req.body.title;
     const image = req.body.image;
     const description = req.body.description;
@@ -40,14 +41,14 @@ router.get('/:id', (req, res) => {
 });
 
 // EDIT a movie
-router.get('/:id/edit', checkMovieOwnership, (req, res) => {
+router.get('/:id/edit', mw.checkMovieOwnership, (req, res) => {
     Movie.findById(req.params.id, (err, foundMovie) => {
         res.render('movies/edit', {movie: foundMovie});
     });
 });
 
 // UPDATE movie route
-router.put('/:id', checkMovieOwnership, (req, res) => {
+router.put('/:id', mw.checkMovieOwnership, (req, res) => {
     Movie.findByIdAndUpdate(req.params.id, req.body.movie, (err, updatedMovie) => {
         if (err) {
             console.log('unable to update movie', err);
@@ -60,7 +61,7 @@ router.put('/:id', checkMovieOwnership, (req, res) => {
 });
 
 // DESTROY movie route
-router.delete('/:id', checkMovieOwnership, (req, res) => {
+router.delete('/:id', mw.checkMovieOwnership, (req, res) => {
     Movie.findByIdAndRemove(req.params.id, (err) => {
         if (err) {
             console.log('an error deleting the movie', err);
@@ -68,29 +69,5 @@ router.delete('/:id', checkMovieOwnership, (req, res) => {
         res.redirect('/movies');  // redirect either way
     });
 });
-
-function isLoggedIn(req, res, next){
-    if (req.isAuthenticated()) return next();
-    res.redirect('/login');
-}
-
-function checkMovieOwnership(req, res, next){
-    if (req.isAuthenticated()) {
-        Movie.findById(req.params.id, (err, foundMovie) => {
-            if (err) res.redirect('back');
-            else {
-                if (foundMovie.author.id.equals(req.user._id)){  // they own it
-                    next();
-                }
-                else {
-                    res.redirect('back'); // they don't own it.
-                }
-            }
-        });
-    }
-    else {
-        res.redirect('back');  // user is not logged in
-    }
-}
 
 module.exports = router;
