@@ -4,8 +4,7 @@ const Movie = require('../models/movie');
 const Comment = require('../models/comment');
 const mw = require('../middleware');
 
-// TODO:  redirect /comment to /comments/new
-// NEW               /movies/:id/comments/new   GET
+// COMMENT NEW
 router.get('/new', mw.isLoggedIn, (req, res) => {
     // find movie by id
     Movie.findById(req.params.id, (err, foundMovie) => {
@@ -21,16 +20,21 @@ router.post('', mw.isLoggedIn, (req, res) => {
     Movie.findById(movieId, (err, foundMovie) => {
         if (err) {
             console.log(err);
-            res.redirect('/movies');   // TODO: ? explain this redirect to the user
+            req.flash('error', 'Could not find the movie to comment on, something went wrong');
+            res.redirect('/movies');
         }
         else {
             Comment.create(req.body.comment, (err, newComment) => {
-                if (err) return console.log(err);
+                if (err) {
+                    req.flash('error', 'Could not create comment, something went wrong.');
+                    return console.log(err);
+                }
                 newComment.author.id = req.user._id;
                 newComment.author.username = req.user.username;
                 newComment.save();
                 foundMovie.comments.push(newComment);
                 foundMovie.save();
+                req.flash('success', 'Added new comment');
                 res.redirect(`/movies/${movieId}`);
             });
         }
@@ -63,8 +67,8 @@ router.put('/:comment_id', mw.checkCommentOwnership, (req, res) => {
 router.delete('/:comment_id', mw.checkCommentOwnership, (req, res) => {
     Comment.findByIdAndRemove(req.params.comment_id, (err, removedComment) => {
         if (err) return console.log('could not find comment id for deletion', err);
-        // TODO:  flash comment successfully removed
-        res.redirect(`/movies/${req.params.id}`);  // back to show page, & see comment is deleted.
+        req.flash('success', 'Comment successfully deleted');
+        res.redirect(`/movies/${req.params.id}`);
     });
 });
 

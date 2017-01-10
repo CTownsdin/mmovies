@@ -41,10 +41,11 @@ router.post('/signup', (req, res) => {
     const newUser = new User({ username: req.body.username });
     User.register(new User( { username: req.body.username } ), req.body.password, (err, user) => {
         if (err) {
-            console.log(err);
-            return res.render('signup');
+            req.flash('error', err.message);  // TODO: duplicate username, etc etc
+            return res.redirect('/signup');
         }
-        passport.authenticate('local')(req, res, function(){   // strategy choice is here.
+        passport.authenticate('local')(req, res, function(){
+            req.flash('success', 'Welcome to the Movies service ' + user.username);
             res.redirect('/movies');
         });
     });

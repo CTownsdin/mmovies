@@ -40,9 +40,18 @@ router.get('/:id', (req, res) => {
     });
 });
 
+// REDIRECT a manual /comment path guess by user -> to the correct path
+router.get('/:id/comment', mw.isLoggedIn, (req, res) => {
+    const id = req.params.id;
+    res.redirect(`/movies/${id}/comments/new`);
+});
+
 // EDIT a movie
 router.get('/:id/edit', mw.checkMovieOwnership, (req, res) => {
     Movie.findById(req.params.id, (err, foundMovie) => {
+        if (err){
+            req.flash('error', 'Movie was not found');
+        }
         res.render('movies/edit', {movie: foundMovie});
     });
 });
