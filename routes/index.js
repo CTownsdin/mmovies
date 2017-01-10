@@ -15,12 +15,13 @@ router.get('/landing', (req, res) => {
 
 router.get('/logout', (req, res) => {
     req.logout();  // came with packages installed
+    req.flash('success', 'Logged you out');
     res.redirect('landing');
-})
+});
 
 // AUTH ROUTES
 router.get('/login', (req, res) => {
-    res.render('login');
+    res.render('login');  // flash msg here was:  {message: req.flash('error')}
 });
 
 router.post('/login', passport.authenticate('local',

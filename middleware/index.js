@@ -49,8 +49,9 @@ middlewareObj.checkCommentOwnership = function(req, res, next){
 
 middlewareObj.isLoggedIn = function(req, res, next){
     if (req.isAuthenticated()) return next();
-    // TODO: flash the redirect
+    req.flash('error', 'Please login first, then you can do that...');  // in flash, stash the msg
+    // req.flash enables you to add in some data that will be passed from this middleware to the next, and can be used there, ie in the redirect;  a one time thing :)
     res.redirect('/login');
-}
+};
 
 module.exports = middlewareObj;
