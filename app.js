@@ -21,9 +21,7 @@ const indexRoutes = require('./routes/index');
 const dotenv = require('dotenv').config(); // load .env file
 
 // mongoose.connect('mongodb://localhost/meaningful_movies');
-const username = process.env.DATABASE_USER;
-const password = process.env.DATABASE_PASSWORD
-mongoose.connect(`mongodb://${username}:${password}@ds161048.mlab.com:61048/obscure-journey-80961`);
+mongoose.connect(`mongodb://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@ds161048.mlab.com:61048/obscure-journey-80961`);
 
 app.use( bodyParser.urlencoded({extended: true}) );  // stnd bodyParser
 
