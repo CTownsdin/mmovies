@@ -76,6 +76,6 @@ app.use(indexRoutes);
 app.use('/movies', movieRoutes);
 app.use('/movies/:id/comments', commentRoutes);
 
-app.listen(process.env.PORT, process.env.IP, function() {
+app.listen(process.env.PORT || 5000, function() {
     console.log(`\nServer has started. Port: ${process.env.PORT} :)`);
 });
