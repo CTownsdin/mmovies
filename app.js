@@ -1,4 +1,3 @@
-const dotenv = require('dotenv').config(); // load .env file
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -18,7 +17,13 @@ const commentRoutes = require('./routes/comments');
 const movieRoutes = require('./routes/movies');
 const indexRoutes = require('./routes/index');
 
-mongoose.connect('mongodb://localhost/meaningful_movies');
+// LOCAL .env file
+const dotenv = require('dotenv').config(); // load .env file
+
+// mongoose.connect('mongodb://localhost/meaningful_movies');
+const username = process.env.DATABASE_USER;
+const password = process.env.DATABASE_PASSWORD
+mongoose.connect(`mongodb://${username}:${password}@ds161048.mlab.com:61048/obscure-journey-80961`);
 
 app.use( bodyParser.urlencoded({extended: true}) );  // stnd bodyParser
 
@@ -74,5 +79,5 @@ app.use('/movies', movieRoutes);
 app.use('/movies/:id/comments', commentRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function() {
-    console.log(`\n${(new Date).getTime()} - Meaningful Movies server has started. :)`);
+    console.log(`\nServer has started. Port: ${process.env.PORT} :)`);
 });
